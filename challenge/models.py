@@ -1,9 +1,9 @@
 from ckeditor.fields import RichTextField
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
 from django.db.models.signals import pre_save, m2m_changed
 
+from account.models import User
 from utils.main import unique_slug_generator
 
 
@@ -56,8 +56,10 @@ class ChallengesParticipation(models.Model):
     reg_time = models.DateTimeField(auto_now_add=True)
     submission_time = models.DateTimeField(blank=True, null=True)
     feedback = models.TextField(blank=True)
+    submission_link = models.CharField(max_length=300, null=True, blank=True)
     challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE)
-    member = models.ManyToManyField(User)
+    member = models.ManyToManyField(User, related_name="member")
+    leader = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
